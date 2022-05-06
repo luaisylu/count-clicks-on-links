@@ -1,6 +1,8 @@
-from urllib.parse import urlparse
-import requests
 import os
+import argparse
+
+import requests
+from urllib.parse import urlparse
 
 
 def shorten_link(link, headers):
@@ -23,23 +25,42 @@ def count_clicks(link, headers):
 def check_bitlink(link, headers):
   parsed_link = urlparse(link)
   url = "https://api-ssl.bitly.com/v4/bitlinks/{}{}"
-  clicks_url = url.format(parsed_link.netloc,parsed_link.path)
+  clicks_url = url.format(
+                          parsed_link.netloc, 
+                          parsed_link.path
+                         )
   response = requests.get(clicks_url, headers=headers)
-  return response.json()["archived"]
+  return response.ok
 
 
-def main():
-  link = input("Введите ссылку: ")
-  bitly_token = os.getenv("BITLY_TOKEN")
-  headers = {"Authorization" : "Bearer {}".format(bitly_token)}
+#def find_out_link():
+    
+    
+   # return link
+
   
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--url', help='Введите ссылку: ')
+  link = parser.parse_args()
+  parsed_link = urlparse(link.url)
+  if parsed_link.scheme:
+      link = link.url
+  else:
+      link = "https://{}" 
+      link = link.format(parsed_link.path)
+
+  bitly_token = os.getenv("BITLY_TOKEN")
+  headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
   try:
-    bitlink_check = check_bitlink
-    print("По вашей ссылке прошли ", count_clicks(link, headers), "раз(а)")
+    check_bitlink(link, headers)
+    print("По вашей ссылке прошли ", count_clicks(link, headers), 
+      "раз(а)")
   except requests.exceptions.HTTPError:
     link_short = shorten_link(link, headers)
-    print("Битлинк ", link_short)
+    print("Битлинк ", link_short)   
 
 
 if __name__ == "__main__":
 	main()
+
