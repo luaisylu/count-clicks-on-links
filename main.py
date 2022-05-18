@@ -38,8 +38,7 @@ def main():
   if parsed_link.scheme:
       link = link.url
   else:
-      link = "https://{}" 
-      link = link.format(parsed_link.path)
+      link = f"https://{parsed_link.path}"
 
   bitly_token = os.getenv("BITLY_TOKEN")
   headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
