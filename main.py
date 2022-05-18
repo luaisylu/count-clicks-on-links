@@ -43,12 +43,14 @@ def main():
   bitly_token = os.getenv("BITLY_TOKEN")
   headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
   try:
-    check_bitlink(link, headers)
-    print("По вашей ссылке прошли ", count_clicks(link, headers), 
+    if check_bitlink(link, headers):
+    	print("По вашей ссылке прошли ", count_clicks(link, headers), 
       "раз(а)")
+    else:
+      link_short = shorten_link(link, headers)
+      print("Битлинк ", link_short) 
   except requests.exceptions.HTTPError:
-    link_short = shorten_link(link, headers)
-    print("Битлинк ", link_short)   
+      print("Ошибка")
 
 
 if __name__ == "__main__":
