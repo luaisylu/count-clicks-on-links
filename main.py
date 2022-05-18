@@ -32,12 +32,6 @@ def check_bitlink(link, headers):
   response = requests.get(clicks_url, headers=headers)
   return response.ok
 
-
-#def find_out_link():
-    
-    
-   # return link
-
   
 def main():
   parser = argparse.ArgumentParser()
