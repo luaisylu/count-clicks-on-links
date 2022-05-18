@@ -6,9 +6,9 @@ from urllib.parse import urlparse
 
 
 def shorten_link(link, headers):
-  link_shortening = "https://api-ssl.bitly.com/v4/shorten"
+  site_link_shortening = "https://api-ssl.bitly.com/v4/shorten"
   payload = {"long_url": link}
-  response = requests.post(link_shortening, json=payload, headers=headers)
+  response = requests.post(site_link_shortening, json=payload, headers=headers)
   response.raise_for_status()                         
   return response.json()["id"]
 
