@@ -7,16 +7,16 @@ import requests
 from urllib.parse import urlparse
 
 
-def shorten_link(link, headers):
+def shorten_link(arguments, headers):
   site_link_shortening = "https://api-ssl.bitly.com/v4/shorten"
-  payload = {"long_url": link}
+  payload = {"long_url": arguments}
   response = requests.post(site_link_shortening, json=payload, headers=headers)
   response.raise_for_status()                         
   return response.json()["id"]
 
 
-def count_clicks(link, headers):
-  parsed_link = urlparse(link)
+def count_clicks(arguments, headers):
+  parsed_link = urlparse(arguments)
   url = "https://api-ssl.bitly.com/v4/bitlinks/{}{}/clicks/summary"
   clicks_url = url.format(parsed_link.netloc, parsed_link.path)
   response = requests.get(clicks_url, headers=headers)
@@ -24,7 +24,7 @@ def count_clicks(link, headers):
   return response.json()["total_clicks"]
 
 
-def check_bitlink(link, headers):
+def check_bitlink(arguments, headers):
   parsed_link = urlparse(link)
   url = "https://api-ssl.bitly.com/v4/bitlinks/{}{}"
   clicks_url = url.format(parsed_link.netloc, parsed_link.path)
@@ -35,21 +35,21 @@ def check_bitlink(link, headers):
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--url', help='Введите ссылку: ')
-  link = parser.parse_args()
-  parsed_link = urlparse(link.url)
+  arguments = parser.parse_args()
+  parsed_link = urlparse(arguments.url)
   if parsed_link.scheme:
-      link = link.url
+      arguments = arguments.url
   else:
-      link = f"https://{parsed_link.path}"
+      arguments = f"https://{parsed_link.path}"
 
   bitly_token = os.getenv("BITLY_TOKEN")
   headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
   try:
-    if check_bitlink(link, headers):
-    	print("По вашей ссылке прошли ", count_clicks(link, headers), 
+    if check_bitlink(arguments, headers):
+    	print("По вашей ссылке прошли ", count_clicks(arguments, headers), 
       "раз(а)")
     else:
-      link_short = shorten_link(link, headers)
+      link_short = shorten_link(arguments, headers)
       print("Битлинк ", link_short) 
   except requests.exceptions.HTTPError:
       print("Ошибка")
