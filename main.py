@@ -1,6 +1,5 @@
 import os
 import argparse
-from dotenv import load_dotenv
 
 
 import requests
@@ -33,28 +32,30 @@ def check_bitlink(arguments, headers):
 
   
 def main():
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--url', help='Введите ссылку: ')
-  arguments = parser.parse_args()
-  parsed_link = urlparse(arguments.url)
-  if parsed_link.scheme:
-      arguments = arguments.url
-  else:
-      arguments = f"https://{parsed_link.path}"
-
-  bitly_token = os.getenv("BITLY_TOKEN")
-  headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
-  try:
-    if check_bitlink(arguments, headers):
-    	print("По вашей ссылке прошли ", count_clicks(arguments, headers), 
-      "раз(а)")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--url', help='Введите ссылку: ')
+    arguments = parser.parse_args()
+    parsed_link = urlparse(arguments.url)
+    if parsed_link.scheme:
+        arguments = arguments.url
     else:
-      link_short = shorten_link(arguments, headers)
-      print("Битлинк ", link_short) 
-  except requests.exceptions.HTTPError:
-      print("Ошибка")
+        arguments = f"http://{arguments.url}"
+      
+    arguments_url = f"{parsed_link.netloc}{parsed_link.path}"
+
+    bitly_token = os.getenv("BITLY_TOKEN")
+    headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
+    try:
+        if check_bitlink(arguments_url, headers):
+    	    print("По вашей ссылке прошли ", 
+                  count_clicks(arguments_url, headers), 
+                  "раз(а)")
+        else:
+            link_short = shorten_link(arguments, headers)
+            print("Битлинк ", link_short) 
+    except requests.exceptions.HTTPError:
+        print("Ошибка")
 
 
 if __name__ == "__main__":
 	main()
-
