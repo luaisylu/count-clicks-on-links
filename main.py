@@ -25,7 +25,7 @@ def count_clicks(arguments, headers):
 
 
 def check_bitlink(arguments, headers):
-  parsed_link = urlparse(link)
+  parsed_link = urlparse(arguments)
   url = "https://api-ssl.bitly.com/v4/bitlinks/{}{}"
   clicks_url = url.format(parsed_link.netloc, parsed_link.path)
   response = requests.get(clicks_url, headers=headers)
