@@ -37,7 +37,7 @@ def main():
     if parsed_link.scheme:
         arguments = arguments.url
     else:
-        arguments = f"http://{arguments.url}"
+        link_without_scheme = f"http://{arguments.url}"
       
     arguments_url = f"{parsed_link.netloc}{parsed_link.path}"
 
