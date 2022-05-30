@@ -37,16 +37,16 @@ def main():
     if parsed_link.scheme:
         arguments = arguments.url
     else:
-        link_without_scheme = f"http://{arguments.url}"
+        arguments = f"http://{arguments.url}"
       
-    arguments_url = f"{parsed_link.netloc}{parsed_link.path}"
+    link_without_scheme = f"{parsed_link.netloc}{parsed_link.path}"
 
     bitly_token = os.getenv("BITLY_TOKEN")
     headers = {"Authorization" : "Bearer {}".format(bitly_token)}        
     try:
-        if check_bitlink(arguments_url, headers):
+        if check_bitlink(link_without_scheme, headers):
     	    print("По вашей ссылке прошли ", 
-                  count_clicks(arguments_url, headers), 
+                  count_clicks(link_without_scheme, headers), 
                   "раз(а)")
         else:
             link_short = shorten_link(arguments, headers)
