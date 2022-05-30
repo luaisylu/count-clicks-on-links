@@ -16,18 +16,16 @@ def shorten_link(arguments, headers):
 
 def count_clicks(arguments, headers):
   parsed_link = urlparse(arguments)
-  url = "https://api-ssl.bitly.com/v4/bitlinks/{}{}/clicks/summary"
-  clicks_url = url.format(parsed_link.netloc, parsed_link.path)
-  response = requests.get(clicks_url, headers=headers)
+  url = f"https://api-ssl.bitly.com/v4/bitlinks/{parsed_link.netloc}{parsed_link.path}/clicks/summary"
+  response = requests.get(url, headers=headers)
   response.raise_for_status()
   return response.json()["total_clicks"]
 
 
 def check_bitlink(arguments, headers):
   parsed_link = urlparse(arguments)
-  url = "https://api-ssl.bitly.com/v4/bitlinks/{}{}"
-  clicks_url = url.format(parsed_link.netloc, parsed_link.path)
-  response = requests.get(clicks_url, headers=headers)
+  url = f"https://api-ssl.bitly.com/v4/bitlinks/{parsed_link.netloc}{parsed_link.path}"
+  response = requests.get(url, headers=headers)
   return response.ok
 
   
